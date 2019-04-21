@@ -1,0 +1,1 @@
+url="Request URL: https://m.douban.com/rexxar/api/v2/subject_collection/movie_showing/items?os=ios&for_mobile=1&callback=jsonp1&start=0&count=18&loc_id=108288&_=1555743150887"

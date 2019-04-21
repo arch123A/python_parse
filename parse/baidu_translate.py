@@ -32,6 +32,19 @@ class Translate():
         except:
             print("输入的header有错误")
 
+    def get_cookie_dict(self,cookie):
+        """将cookie字符串(预览一行一个的那种)转换成字典格式"""\
+
+        list = cookie.strip("\n").split("\n")
+        dict = {x.split(":")[0].strip(): x.split(":")[1].strip() for x in list}
+        print(dict)
+
+    def cookie_string2dict(self,string):
+        """将cookie长字符串转换成字典格式"""
+        lists = string.split(";")
+        dict = {cookie.split("=")[0]: cookie.split("=")[1] for cookie in lists}
+        print(dict)
+        return dict
 
     def query_dict(self):
         params = {
@@ -58,6 +71,8 @@ class Translate():
         title = soup.find('ul', id='translateResult').li.text
         # print(soup)
         print(title)
+
+
 
 
 if __name__ == '__main__':

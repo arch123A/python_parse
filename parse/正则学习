@@ -1,0 +1,271 @@
+python re
+
+
+
+自己的总结：常用re.complie()=rx的方法，re方法类似
+
+match/search/findall/split/sub
+rx.findall(s,start, end):返回一个列表，如果正则表达式中没有分组，则列表中包含的是所有匹配的内容，
+rx.search(s, start, end):search方法只匹配一次就停止，不会继续往后匹配,调用.group()方法显示结果
+rx.match(s, start, end):如果正则表达式在字符串的起始处匹配，就返回一个匹配对象，否则返回None，调用.group()方法显示结果
+rx.sub(x, s, m):返回一个字符串。每一个匹配的地方用x进行替换，返回替换后的字符串，如果指定m，则最多替换m次。
+rx.split(s, m):分割字符串，返回一个列表，如果正则表达式中存在分组，则把分组匹配到的内容放在列表中每两个分割的中间作为列表的一部分
+注意：findall()与search（）不同的是，search只匹配一次
+表 1. 正则表达式元字符和语
+
+符号	说明	实例
+.	表示任意字符，如果说指定了 DOTALL 的标识，就表示包括新行在内的所有字符。	'abc'  >>>'a.c'   >>>结果为:'abc'
+^	表示字符串开头。	'abc'  >>>'^abc'  >>>结果为:'abc'
+$	表示字符串结尾。	'abc'  >>>'abc$'  >>>结果为:'abc'
+*, +, ?	'*'表示匹配前一个字符重复 0 次到无限次，'+'表示匹配前一个字符重复 1次到无限次，'?'表示匹配前一个字符重复 0 次到1次
+'abcccd'  >>>'abc*' >>>结果为:'abccc'
+
+'abcccd' >>>'abc+'  >>>结果为:'abccc'
+
+'abcccd' >>>'abc?'  >>>结果为:'abc'
+
+*?, +?, ??	   前面的*,+,?等都是贪婪匹配，也就是尽可能多匹配，后面加?号使其变成惰性匹配即非贪婪匹配
+'abc'  >>>'abc*?' >>>结果为:'ab'
+
+'abc'  >>>'abc??' >>>结果为:'ab'
+
+'abc'  >>>'abc+?' >>>结果为:'abc'
+
+{m}	匹配前一个字符 m 次	'abcccd' >>>'abc{3}d'  >>>结果为:'abcccd'
+{m,n}	匹配前一个字符 m 到 n 次	'abcccd'  >>> 'abc{2,3}d' >>>结果为:'abcccd'
+{m,n}?	匹配前一个字符 m 到 n 次，并且取尽可能少的情况 	'abccc'  >>> 'abc{2,3}?' >>>结果为:'abcc'
+\	对特殊字符进行转义，或者是指定特殊序列	 'a.c' >>>'a\.c' >>> 结果为: 'a.c'
+[] 表示一个字符集,所有特殊字符在其都失去特殊意义,只有： ^  -  ]  \   含有特殊含义	'abcd' >>>'a[bc]' >>>结果为:'ab'
+|	或者，只匹配其中一个表达式 ，如果|没有被包括在()中，则它的范围是整个正则表达式	'abcd' >>>'abc|acd' >>>结果为:'abc'
+( … )	被括起来的表达式作为一个分组. findall 在有组的情况下只显示组的内容	 'a123d' >>>'a(123)d' >>>结果为:'123'
+(?#...)	注释，忽略括号内的内容  特殊构建不作为分组	 'abc123' >>>'abc(?#fasd)123' >>>结果为:'abc123'
+(?= … )	表达式’…’之前的字符串，特殊构建不作为分组	在字符串’ pythonretest ’中 (?=test) 会匹配’ pythonre ’
+(?!...)	后面不跟表达式’…’的字符串，特殊构建不作为分组	如果’ pythonre ’后面不是字符串’ test ’，那么 (?!test) 会匹配’ pythonre ’
+(?<= … )	跟在表达式’…’后面的字符串符合括号之后的正则表达式，特殊构建不作为分组	正则表达式’ (?<=abc)def ’会在’ abcdef ’中匹配’ def ’
+（?:）	取消优先打印分组的内容	'abc' >>>'(?:a)(b)' >>>结果为'[b]'
+?P<>	指定Key	'abc' >>>'(?P<n1>a)>>>结果为:groupdict{n1:a}
+表 2. 正则表达式特殊序列
+特殊表达式序列	说明
+\A	只在字符串开头进行匹配。
+\b	匹配位于开头或者结尾的空字符串
+\B	匹配不位于开头或者结尾的空字符串
+\d	匹配任意十进制数，相当于 [0-9]
+\D	匹配任意非数字字符，相当于 [^0-9]
+\s	匹配任意空白字符，相当于 [ \t\n\r\f\v]
+\S	匹配任意非空白字符，相当于 [^ \t\n\r\f\v]
+\w	匹配任意数字和字母，相当于 [a-zA-Z0-9_]
+\W	匹配任意非数字和字母的字符，相当于 [^a-zA-Z0-9_]
+\Z	只在字符串结尾进行匹配
+2. Python正则表达式模块
+　　2.1 正则表达式处理字符串主要有四大功能
+　　　　1. 匹配 查看一个字符串是否符合正则表达式的语法，一般返回true或者false
+　　　　2. 获取	正则表达式来提取字符串中符合要求的文本
+　　　　3. 替换	查找字符串中符合正则表达式的文本，并用相应的字符串替换
+　　　　4. 分割	使用正则表达式对字符串进行分割。
+　　2.2 Python中re模块使用正则表达式的两种方法
+　　　　1. 使用re.compile(r, f)方法生成正则表达式对象，然后调用正则表达式对象的相应方法。这种做法的好处是生成正则对象之后可以多次使用。
+　　　　2. re模块中对正则表达式对象的每个对象方法都有一个对应的模块方法，唯一不同的是传入的第一个参数是正则表达式字符串。此种方法适合于只使用一次的正则表达式。
+
+
+#实例：
+# 未采用compile()方法：
+ret = re.findall('\.com','www.baidu.com___www.jingdong.com')
+print("ret",ret)
+# 采用compile()方法：
+obj = re.compile('\.com')
+ret1 = obj.findall('www.baidu.com___www.jingdong.com')
+print("ret1",ret1)
+# 两次输出结果：相同
+# ret ['.com', '.com']
+# ret1 ['.com', '.com']
+
+
+　　2.2.1-1 正则表达式对象的常用方法
+　　　　1. rx.findall(s,start, end):
+　　　　　　返回一个列表，如果正则表达式中没有分组，则列表中包含的是所有匹配的内容，
+　　　　　　如果正则表达式中有分组，则列表中的每个元素是一个元组，元组中包含子分组中匹配到的内容，但是没有返回整个正则表达式匹配的内容
+　　　　2. rx.finditer(s, start, end):
+　　　　　　返回一个可迭代对象
+　　　　　　对可迭代对象进行迭代，每一次返回一个匹配对象，可以调用匹配对象的group()方法查看指定组匹配到的内容，0表示整个正则表达式匹配到的内容
+　　　　3. rx.search(s, start, end):
+　　　　　　返回一个匹配对象,倘若没匹配到，就返回None
+　　　　　　search方法只匹配一次就停止，不会继续往后匹配,调用.group()方法显示结果
+　　　　4. rx.match(s, start, end):
+　　　　　　如果正则表达式在字符串的起始处匹配，就返回一个匹配对象，否则返回None，调用.group()方法显示结果
+　　　　5. rx.sub(x, s, m):
+　　　　　　返回一个字符串。每一个匹配的地方用x进行替换，返回替换后的字符串，如果指定m，则最多替换m次。对于x可以使用/i或者/g<id>id可以是组名或者编号来引用捕获到的内容。
+　　　　　　模块方法re.sub(r, x, s, m)中的x可以使用一个函数。此时我们就可以对捕获到的内容推过这个函数进行处理后再替换匹配到的文本。
+　　　　6. rx.subn(x, s, m):
+　　　　　　与re.sub()方法相同，区别在于返回的是二元组，其中一项是结果字符串，一项是做替换的个数。
+　　　　7. rx.split(s, m):分割字符串
+　　　　　　返回一个列表
+　　　　　　用正则表达式匹配到的内容对字符串进行分割
+　　　　　　如果正则表达式中存在分组，则把分组匹配到的内容放在列表中每两个分割的中间作为列表的一部分，如：
+
+            rx = re.compile(r"(\d)[a-z]+(\d)")
+　　　　　　s = "ab12dk3klj8jk9jks5"
+　　　　　　result = rx.split(s)
+　　　　　　返回['ab1', '2', '3', 'klj', '8', '9','jks5']
+这里分割的字符串是2dk3/8jk9由于分组是字母所以只显示字母
+　　　　8. rx.flags():正则表达式编译时设置的标志
+　　　　9. rx.pattern():正则表达式编译时使用的字符串
+　　2.2.1-2匹配对象的属性与方法
+　　　　01. m.group(g, ...)
+　　　　　　返回编号或者组名匹配到的内容，默认或者0表示整个表达式匹配到的内容，如果指定多个，就返回一个元组
+　　　　02. m.groupdict(default)
+　　　　　　返回一个字典。字典的键是所有命名的组的组名，值为命名组捕获到的内容
+　　　　　　如果有default参数，则将其作为那些没有参与匹配的组的默认值。
+　　　　03. m.groups(default)
+　　　　　　返回一个元组。包含所有捕获到内容的子分组，从1开始，如果指定了default值，则这个值作为那些没有捕获到内容的组的值
+　　　　04. m.lastgroup()
+　　　　　　匹配到内容的编号最高的捕获组的名称，如果没有或者没有使用名称则返回None(不常用)
+　　　　05. m.lastindex()
+　　　　　　匹配到内容的编号最高的捕获组的编号，如果没有就返回None。
+　　　　06. m.start(g):
+　　　　　　当前匹配对象的子分组是从字符串的那个位置开始匹配的,如果当前组没有参与匹配就返回-1
+　　　　07. m.end(g)
+　　　　　　当前匹配对象的子分组是从字符串的那个位置匹配结束的，如果当前组没有参与匹配就返回-1
+　　　　08. m.span()
+　　　　　　返回一个二元组，内容分别是m.start(g)和m.end(g)的返回值
+　　　　09. m.re()
+　　　　　　产生这一匹配对象的正则表达式
+　　　　10. m.string()
+　　　　　　传递给match或者search用于匹配的字符串
+　　　　11. m.pos()
+　　　　　　搜索的起始位置。即字符串的开头，或者start指定的位置(不常用)
+　　　　12. m.endpos()
+　　　　　　搜索的结束位置。即字符串的末尾位置，或者end指定的位置(不常用)
+
+2.2.2-1   直接使用re
+
+1、 re.findall(pattern, string[, flags]):方法能够以列表的形式返回能匹配的子串。先看简单的例子：
+
+    import re
+    a = 'one1two2three3four4'
+    ret = re.findall(r'(\d+)',a)
+    print(ret)
+    ['1', '2', '3', '4']
+
+从上面的例子可以看出返回的值是个列表，并且返回字符串中所有匹配的字符串。　
+
+ 2、re.finditer(pattern, string[, flags])搜索string，返回一个顺序访问每一个匹配结果（Match对象）的迭代器。 请看例子：
+
+1
+2
+3
+4
+5
+6
+7
+8
+import re
+
+p = re.compile(r'\d+')
+for m in p.finditer('one1two2three3four4'):
+print m.group(),
+
+### output ###
+# 1 2 3 4　
+3、re.match和re.search
+
+Python提供了两种不同的原始操作：match和search。match是从字符串的起点开始做匹配，而search（perl默认）是从字符串做任意匹配。看个例子:
+
+import re
+
+ret_match= re.match("c","abcde");     #从字符串开头匹配，匹配到返回match的对象，匹配不到返回None
+if(ret_match):
+print("ret_match:"+ret_match.group());
+else:
+print("ret_match:None");
+
+ret_search = re.search("c","abcde"); #扫描整个字符串返回第一个匹配到的元素并结束，匹配不到返回None
+if(ret_search):
+print("ret_search:"+ret_search.group());
+
+ret_match:None
+ret_search:c
+
+re.match对象拥有以下方法：
+
+
+import re
+a = "123abc456"
+ret_match= re.match("a","abcde");
+print(ret_match.group())  #返回返回被 RE 匹配的字符串
+print(ret_match.start())  #返回匹配开始的位置
+print(ret_match.end())    #返回匹配结束的位置
+print(ret_match.span())   #返回一个元组包含匹配 (开始,结束) 的位
+其中group()方法可以指定组号，如果组号不存在则返回indexError异常看如下例子：
+1
+2
+3
+4
+5
+6
+import re
+a = "123abc456"
+re.search("([0-9]*)([a-z]*)([0-9]*)",a).group(0)   #123abc456,返回整体默认返回group(0)
+re.search("([0-9]*)([a-z]*)([0-9]*)",a).group(1)   #123
+re.search("([0-9]*)([a-z]*)([0-9]*)",a).group(2)   #abc
+re.search("([0-9]*)([a-z]*)([0-9]*)",a).group(3)   #456
+4、re.sub和re.subn
+
+两种方法都是用来替换匹配成功的字串,值得一提的时，sub不仅仅可以是字符串，也可以是函数。subn函数返回元组，看下面例子:
+
+1
+2
+3
+4
+5
+6
+import  re
+#sub
+ret_sub = re.sub(r'(one|two|three)','ok','one word two words three words') #ok word ok words ok words
+#subn
+import  re
+ret_subn = re.subn(r'(one|two|three)','ok','one word two words three words') #('ok word ok words ok words', 3) 3,表示替换的次数
+5、re.split(pattern, string, maxsplit=0)
+
+通过正则表达式将字符串分离。如果用括号将正则表达式括起来，那么匹配的字符串也会被列入到list中返回。maxsplit是分离的次数，maxsplit=1分离一次，默认为0，不限制次数。看一下例子：
+
+1
+2
+3
+4
+import re
+ret = re.split('\d+','one1two2three3four4') #匹配到1的时候结果为'one'和'two2three3four4'，匹配到2的时候结果为'one', 'two'和'three3four4', 所以结果为：
+####output####
+['one', 'two', 'three', 'four', '']
+
+
+
+re 小节
+1
+2
+3
+4
+5
+#re.match()
+#re.search()
+#re.findall()
+#re.split()
+#re.sub()
+
+　　2.5 总结
+1. 对于正则表达式的匹配功能，Python没有返回true和false的方法，但可以通过对match或者search方法的返回值是否是None来判断
+2. 对于正则表达式的搜索功能，如果只搜索一次可以使用search或者match方法返回的匹配对象得到，对于搜索多次可以使用finditer方法返回的可迭代对象来迭代访问
+3. 对于正则表达式的替换功能，可以使用正则表达式对象的sub或者subn方法来实现，也可以通过re模块方法sub或者subn来实现，区别在于模块的sub方法的替换文本可以使用一个函数来生成
+4. 对于正则表达式的分割功能，可以使用正则表达式对象的split方法，需要注意如果正则表达式对象有分组的话，分组捕获的内容也会放到返回的列表中
+
+
+
+match/search/findall/split/sub
+
+rx.findall(s,start, end):返回一个列表，如果正则表达式中没有分组，则列表中包含的是所有匹配的内容，
+rx.search(s, start, end):search方法只匹配一次就停止，不会继续往后匹配,调用.group()方法显示结果
+rx.match(s, start, end):如果正则表达式在字符串的起始处匹配，就返回一个匹配对象，否则返回None，调用.group()方法显示结果
+rx.sub(x, s, m):返回一个字符串。每一个匹配的地方用x进行替换，返回替换后的字符串，如果指定m，则最多替换m次。
+
+rx.split(s, m):分割字符串，返回一个列表，如果正则表达式中存在分组，则把分组匹配到的内容放在列表中每两个分割的中间作为列表的一部分
+
+注意：findall()与search（）不同的是，search只匹配一次
