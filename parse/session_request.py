@@ -13,7 +13,7 @@ def save_file(file, content):
 
 
 session=requests.Session()
-data={"email":'18580153628','password':'mw131016'}
+data={"email":'','password':''}
 url='http://www.renren.com/PLogin.do'
 headers = {
     "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1",
