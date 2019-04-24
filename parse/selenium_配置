@@ -3,3 +3,8 @@
    根据自己浏览器的版本选择相应的Chromedriver，一定要把他下载到浏览器的根目录下，
 打开Windows profilesx86  然后找到google，之后就好办了
      修改:我的电脑->属性->高级系统设置->环境变量->系统环境修改path：双击path->右边按钮添加文本,然后在最后面添加 ;C:\Program Files (x86)\Google\Chrome\Application（每一个都不要少）
+
+
+windows下ie配置driver
+网址：https://blog.csdn.net/xc_zhou/article/details/80782742
+IEDriver下载地址：http://ftp-new-pc.pconline.com.cn/d87dd2a678abfae7dd08b09f29a77eb5/pub/download/201010/pconline1483963173183.zip
