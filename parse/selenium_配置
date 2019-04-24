@@ -1,0 +1,5 @@
+1、windows下chrome配置
+   首先下载Chromedriver    下载地址：http://chromedriver.storage.googleapis.com/index.html
+   根据自己浏览器的版本选择相应的Chromedriver，一定要把他下载到浏览器的根目录下，
+打开Windows profilesx86  然后找到google，之后就好办了
+     修改:我的电脑->属性->高级系统设置->环境变量->系统环境修改path：双击path->右边按钮添加文本,然后在最后面添加 ;C:\Program Files (x86)\Google\Chrome\Application（每一个都不要少）
